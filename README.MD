@@ -11,7 +11,7 @@
   ╚═══╝  ╚═╝╚═════╝ ╚══════╝╚═╝     ╚══════╝ ╚═════╝  ╚══╝╚══╝
 ```
 
-**Versi:** 2.0 &nbsp;|&nbsp; **Status:** MVP Development &nbsp;|&nbsp; **April 2026**
+**Versi:** 2.1 &nbsp;|&nbsp; **Status:** MVP — Bug Fix Release &nbsp;|&nbsp; **April 2026**
 
 [![PHP](https://img.shields.io/badge/PHP-8.x-777BB4?style=flat&logo=php&logoColor=white)](https://php.net)
 [![MySQL](https://img.shields.io/badge/MySQL-8.0-4479A1?style=flat&logo=mysql&logoColor=white)](https://mysql.com)
@@ -36,6 +36,7 @@
 10. [Matriks Hak Akses](#-matriks-hak-akses)
 11. [Keamanan](#-keamanan)
 12. [Kontribusi](#-kontribusi)
+13. [Riwayat Perubahan](#-riwayat-perubahan)
 
 ---
 
@@ -76,6 +77,7 @@ Sistem ini dibangun sepenuhnya menggunakan **Vanilla PHP 8** dengan pola arsitek
 │  Interaktivitas      │  Vanilla JavaScript (ES6+)          │
 │  Backend             │  PHP 8.x (Pure / Vanilla MVC)       │
 │  Database            │  MySQL 8.x via PDO + Prepared Stmt  │
+│  Kontainer           │  Docker + Docker Compose            │
 │  Server Lokal        │  XAMPP / Laragon / php -S           │
 │  Security            │  Bcrypt, CSRF Token, Session Guard  │
 └──────────────────────┴──────────────────────────────────────┘
@@ -108,13 +110,13 @@ VibeFlow/
 │
 ├── models/
 │   ├── UserModel.php           # Query autentikasi & manajemen user
-│   ├── ProjectModel.php        # CRUD proyek & kalkulasi progress
+│   ├── ProjectModel.php        # CRUD proyek, kalkulasi progress & statistik dashboard
 │   ├── TaskModel.php           # CRUD tugas & update status Kanban
 │   └── DocumentModel.php       # Manajemen rekaman file di DB
 │
 ├── controllers/
 │   ├── AuthController.php      # Login, logout, inisialisasi sesi
-│   ├── DashboardController.php # Routing dashboard berdasarkan role
+│   ├── DashboardController.php # Routing dashboard berdasarkan role + fetch statistik DB
 │   ├── ProjectController.php   # Endpoint proyek (list, detail, create)
 │   ├── TaskController.php      # Endpoint tugas & update status (AJAX)
 │   ├── DocumentController.php  # Upload & download file
@@ -148,82 +150,85 @@ VibeFlow/
 │       └── {project_id}/       # File diorganisir per-proyek
 │
 └── DOC/
-    └── SRS_VibeFlow_Enhanced.md  # Dokumen SRS lengkap
+    ├── SRS_VibeFlow_Enhanced.md  # Dokumen SRS lengkap
+    └── test.md                   # Test plan & checklist QA
 ```
 
 ---
 
 ## ⚙️ Instalasi & Konfigurasi
 
-### Langkah 1 — Clone / Siapkan Proyek
+Terdapat dua metode instalasi: **Docker** (direkomendasikan) dan **manual** (XAMPP/Laragon).
 
-Pastikan folder proyek sudah berada di direktori web server Anda:
+---
+
+### Metode A — Docker (Direkomendasikan)
+
+Metode ini menyiapkan PHP + MySQL secara otomatis dalam satu perintah.
+
+**Prasyarat:** Docker & Docker Compose terinstal di sistem Anda.
 
 ```bash
-# Jika menggunakan XAMPP (Windows/Linux)
-# Letakkan folder VibeFlow di: C:/xampp/htdocs/ atau /opt/lampp/htdocs/
-
-# Jika menggunakan Laragon
-# Letakkan folder VibeFlow di: C:/laragon/www/
-
-# Jika menggunakan php built-in server
+# 1. Masuk ke direktori proyek
 cd /path/to/VibeFlow
-php -S localhost:8000
+
+# 2. Jalankan semua layanan (web + db) dalam mode background
+docker compose up -d --build
 ```
 
-### Langkah 2 — Konfigurasi Database
+> File `database.sql` otomatis diimpor saat container `db` pertama kali dibuat via `docker-entrypoint-initdb.d`.
 
-Buka file `config/database.php` dan sesuaikan dengan pengaturan MySQL lokal Anda:
+**Konfigurasi database untuk Docker** sudah tersedia di `config/database.php`:
 
 ```php
-<?php
-define('DB_HOST', 'localhost');  // Host MySQL
-define('DB_NAME', 'vibeflow_db'); // Nama database
-define('DB_USER', 'root');        // Username MySQL
-define('DB_PASS', '');            // Password MySQL (kosong untuk XAMPP default)
+define('DB_HOST', 'db');           // nama service docker
+define('DB_NAME', 'vibeflow_db');
+define('DB_USER', 'vibeuser');
+define('DB_PASS', 'vibepassword');
 ```
 
-### Langkah 3 — Import Database
+Akses aplikasi di: **`http://localhost:8000`**
 
-Buka phpMyAdmin atau MySQL CLI, lalu jalankan script berikut:
+---
+
+### Metode B — Manual (XAMPP / Laragon)
+
+**Langkah 1** — Letakkan folder proyek di direktori web server:
 
 ```bash
-# Via MySQL CLI
+# XAMPP Windows: C:/xampp/htdocs/VibeFlow
+# Laragon:       C:/laragon/www/VibeFlow
+# XAMPP Linux:   /opt/lampp/htdocs/VibeFlow
+```
+
+**Langkah 2** — Sesuaikan `config/database.php` untuk MySQL lokal:
+
+```php
+define('DB_HOST', 'localhost');
+define('DB_NAME', 'vibeflow_db');
+define('DB_USER', 'root');
+define('DB_PASS', ''); // kosong untuk XAMPP default
+```
+
+**Langkah 3** — Import database via MySQL CLI atau phpMyAdmin:
+
+```bash
 mysql -u root -p < database.sql
-
-# Atau via phpMyAdmin:
-# 1. Buka http://localhost/phpmyadmin
-# 2. Klik "Import" → pilih file database.sql
-# 3. Klik "Go"
 ```
 
-Script `database.sql` secara otomatis akan:
-- Membuat database `vibeflow_db`
-- Membuat semua tabel (`users`, `projects`, `tasks`, `documents`, `activity_logs`)
-- Menyisipkan 4 akun demo awal
+Script `database.sql` akan membuat database, semua tabel, dan 4 akun demo.
 
-### Langkah 4 — Izin Folder Upload
-
-Pastikan folder `uploads/` dapat ditulis oleh web server:
+**Langkah 4** — Atur izin folder upload:
 
 ```bash
-# Linux/macOS
 chmod -R 755 uploads/
-
-# Atau jika menggunakan Apache/Nginx
-chown -R www-data:www-data uploads/
 ```
 
-### Langkah 5 — Akses Aplikasi
-
-Buka browser dan navigasikan ke:
+**Langkah 5** — Akses di browser:
 
 ```
-http://localhost:8000         # Jika menggunakan php built-in server
-http://localhost/VibeFlow     # Jika menggunakan XAMPP
+http://localhost/VibeFlow
 ```
-
-Anda akan diredirect ke halaman login secara otomatis.
 
 ---
 
@@ -484,6 +489,39 @@ Proyek ini dikembangkan sebagai sistem internal. Untuk saran atau pelaporan bug:
 ## 📄 Lisensi
 
 Proyek ini dikembangkan untuk keperluan akademis dan internal tim. Seluruh hak cipta dimiliki oleh **Tim Pengembang VibeFlow**.
+
+---
+
+## 📝 Riwayat Perubahan
+
+### v2.1 — Bug Fix Release (18 April 2026)
+
+#### 🐛 Perbaikan Bug
+
+| Komponen | Masalah | Solusi |
+|----------|---------|--------|
+| `DashboardController.php` | Statistik dashboard menampilkan `--` (tidak terhubung ke DB) | Menambahkan logika pengambilan data via `ProjectModel::getDashboardStats()` sebelum render view |
+| `models/ProjectModel.php` | Tidak ada method untuk query statistik global | Menambahkan method `getDashboardStats()` dengan 3 query: total proyek, task aktif, dan deadline mendatang |
+| `views/dashboard/pm.php` | Nilai statistik hardcoded sebagai teks statis `--` | Diganti dengan `<?= $stats['...'] ?>` untuk menampilkan data dinamis dari database |
+| `assets/js/kanban.js` | Drag & drop Kanban tidak memperbarui status di DB | Diperbaiki logika fetch AJAX ke endpoint `/tasks/update_status` |
+| `controllers/ReportController.php` | Tombol "View Report" tidak tersedia bagi Client | Tombol ditambahkan di halaman Detail Project |
+| `helpers/auth_guard.php` | Log aktivitas tidak terekam pada beberapa aksi | Diperbaiki pemanggilan `log_activity()` yang terlewat |
+
+#### ✅ Status Pengujian (Test Plan v2.1)
+
+| Modul | Lulus | Gagal | Ditunda |
+|-------|:-----:|:-----:|:-------:|
+| Autentikasi & Sesi (TC-AUTH) | 6/6 | 0 | 0 |
+| Manajemen Proyek (TC-PROJ) | 4/4 | 0 | 0 |
+| Task Board & Kanban (TC-TASK) | 4/4 | 0 | 0 |
+| Manajemen Dokumen (TC-DOC) | 4/4 | 0 | 0 |
+| Pelaporan & Audit (TC-REP/AUD) | 3/3 | 0 | 0 |
+| **Total** | **21/21** | **0** | **0** |
+
+---
+
+### v2.0 — MVP Development (April 2026)
+- Rilis awal sistem VibeFlow dengan fitur RBAC, Kanban Board, Manajemen Dokumen, dan Laporan Proyek.
 
 ---
 
