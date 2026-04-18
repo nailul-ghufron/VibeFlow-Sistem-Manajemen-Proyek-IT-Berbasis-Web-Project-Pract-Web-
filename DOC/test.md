@@ -9,12 +9,12 @@ Fokus: Memastikan sistem keamanan login dan pembatasan akses dasar.
 
 | ID | Kasus Uji | Langkah | Hasil yang Diharapkan | Status |
 |----|-----------|---------|-----------------------|--------|
-| TC-AUTH-01 | Login Valid (PM) | Input `pm@vibeflow.com` / `password123` | Masuk ke Dashboard PM | [ ] |
-| TC-AUTH-02 | Login Valid (Dev) | Input `dev@vibeflow.com` / `password123` | Masuk ke Dashboard Programmer | [ ] |
-| TC-AUTH-03 | Login Valid (Client) | Input `client@vibeflow.com` / `password123` | Masuk ke Dashboard Client | [ ] |
-| TC-AUTH-04 | Password Salah | Input email benar, password salah | Muncul pesan "Invalid credentials" | [ ] |
-| TC-AUTH-05 | Akses Tanpa Login | Buka langsung `http://localhost:8000/projects` | Dialihkan (redirect) ke halaman Login | [ ] |
-| TC-AUTH-06 | Logout | Klik tombol Logout di sidebar | Sesi berakhir, kembali ke halaman Login | [ ] |
+| TC-AUTH-01 | Login Valid (PM) | Input `pm@vibeflow.com` / `password123` | Masuk ke Dashboard PM | [✅ ] |
+| TC-AUTH-02 | Login Valid (Dev) | Input `dev@vibeflow.com` / `password123` | Masuk ke Dashboard Programmer | [ ✅] |
+| TC-AUTH-03 | Login Valid (Client) | Input `client@vibeflow.com` / `password123` | Masuk ke Dashboard Client | [✅ ] |
+| TC-AUTH-04 | Password Salah | Input email benar, password salah | Muncul pesan "Invalid credentials" | [ ✅] |
+| TC-AUTH-05 | Akses Tanpa Login | Buka langsung `http://localhost:8000/projects` | Dialihkan (redirect) ke halaman Login | [ ✅] |
+| TC-AUTH-06 | Logout | Klik tombol Logout di sidebar | Sesi berakhir, kembali ke halaman Login | [ ✅] |
 
 ---
 
@@ -23,10 +23,10 @@ Fokus: Alur pembuatan dan pemantauan proyek.
 
 | ID | Kasus Uji | Langkah | Hasil yang Diharapkan | Status |
 |----|-----------|---------|-----------------------|--------|
-| TC-PROJ-01 | Buat Proyek Baru | Isi form Create Project dengan lengkap | Proyek muncul di daftar; dialihkan ke list | [ ] |
-| TC-PROJ-02 | Validasi Form Kosong | Klik "Create" dengan field kosong | Muncul pesan error "Title and Deadline are required" | [ ] |
-| TC-PROJ-03 | Detail Proyek | Klik "Details" pada salah satu proyek | Masuk ke halaman detail proyek | [ ] |
-| TC-PROJ-04 | Filter Proyek (Isolasi) | Login sebagai PM A | Tidak bisa melihat proyek milik PM B | [ ] |
+| TC-PROJ-01 | Buat Proyek Baru | Isi form Create Project dengan lengkap | Proyek muncul di daftar; dialihkan ke list | [ ✅] |
+| TC-PROJ-02 | Validasi Form Kosong | Klik "Create" dengan field kosong | Muncul pesan error "Title and Deadline are required" | [✅ ] |
+| TC-PROJ-03 | Detail Proyek | Klik "Details" pada salah satu proyek | Masuk ke halaman detail proyek | [ ✅] |
+| TC-PROJ-04 | Filter Proyek (Isolasi) | Login sebagai PM A | Tidak bisa melihat proyek milik PM B | [ ✅] |
 
 ---
 
@@ -35,10 +35,10 @@ Fokus: Interaktivitas papan tugas dan perhitungan progres.
 
 | ID | Kasus Uji | Langkah | Hasil yang Diharapkan | Status |
 |----|-----------|---------|-----------------------|--------|
-| TC-TASK-01 | Tambah Task (PM) | Klik "+ Add Task" di detail proyek | Task baru muncul di kolom "To Do" | [ ] |
-| TC-TASK-02 | Drag & Drop (Dev) | Geser task dari "To Do" ke "In Progress" | Kartu berpindah; status di DB terupdate | [ ] |
-| TC-TASK-03 | Drag & Drop (Dev) | Geser task ke kolom "Done" | Kartu berpindah; progres proyek di sidebar naik | [ ] |
-| TC-TASK-04 | Update Progres Otomatis | Selesaikan 1 dari 2 task (50%) | Progress bar di sidebar menunjukkan 50% | [ ] |
+| TC-TASK-01 | Tambah Task (PM) | Klik "+ Add Task" di detail proyek | Task baru muncul di kolom "To Do" | [✅ ] |
+| TC-TASK-02 | Drag & Drop (Dev) | Geser task dari "To Do" ke "In Progress" | Kartu berpindah; status di DB terupdate | [ ❌ >> bisa bergeser dan berpindah, tapi status tidak ter upadate] | 
+| TC-TASK-03 | Drag & Drop (Dev) | Geser task ke kolom "Done" | Kartu berpindah; progres proyek di sidebar naik | [❌ >> bisa berpindah, masalah nya progres proyek di side bar tidak naik ] |
+| TC-TASK-04 | Update Progres Otomatis | Selesaikan 1 dari 2 task (50%) | Progress bar di sidebar menunjukkan 50% | [❌ ] |
 
 ---
 
@@ -47,10 +47,10 @@ Fokus: Keamanan file dan validasi upload.
 
 | ID | Kasus Uji | Langkah | Hasil yang Diharapkan | Status |
 |----|-----------|---------|-----------------------|--------|
-| TC-DOC-01 | Upload PDF/Image | Pilih file .pdf atau .png (< 10MB) | File berhasil terunggah dan muncul di list | [ ] |
-| TC-DOC-02 | Upload File Terlarang | Pilih file .exe atau .php | Ditolak dengan pesan error ekstensi | [ ] |
-| TC-DOC-03 | Upload File Raksasa | Pilih file > 10MB | Ditolak dengan pesan "File too large" | [ ] |
-| TC-DOC-04 | Download Dokumen | Klik pada nama dokumen di sidebar | File berhasil diunduh ke komputer | [ ] |
+| TC-DOC-01 | Upload PDF/Image | Pilih file .pdf atau .png (< 10MB) | File berhasil terunggah dan muncul di list | [✅ ] |
+| TC-DOC-02 | Upload File Terlarang | Pilih file .exe atau .php | Ditolak dengan pesan error ekstensi | [✅ ] |
+| TC-DOC-03 | Upload File Raksasa | Pilih file > 10MB | Ditolak dengan pesan "File too large" | [ ✅] |
+| TC-DOC-04 | Download Dokumen | Klik pada nama dokumen di sidebar | File berhasil diunduh ke komputer | [✅ ] |
 
 ---
 
@@ -59,9 +59,9 @@ Fokus: Output sistem dan pencatatan aktivitas.
 
 | ID | Kasus Uji | Langkah | Hasil yang Diharapkan | Status |
 |----|-----------|---------|-----------------------|--------|
-| TC-REP-01 | View Report | Buka dashboard Client -> Klik link Report | Muncul halaman ringkasan proyek | [ ] |
-| TC-REP-02 | Print Report | Klik tombol "Print / Save PDF" | Dialog print browser muncul (bersih tanpa sidebar) | [ ] |
-| TC-AUD-01 | Cek Activity Log | Lakukan login/update status -> Cek DB | Entry baru muncul di tabel `activity_logs` | [ ] |
+| TC-REP-01 | View Report | Buka dashboard Client -> Klik link Report | Muncul halaman ringkasan proyek | [ ❌] |
+| TC-REP-02 | Print Report | Klik tombol "Print / Save PDF" | Dialog print browser muncul (bersih tanpa sidebar) | [❌ ] |
+| TC-AUD-01 | Cek Activity Log | Lakukan login/update status -> Cek DB | Entry baru muncul di tabel `activity_logs` | [ ❌] |
 
 ---
 
