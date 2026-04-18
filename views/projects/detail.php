@@ -10,6 +10,12 @@
             <?= $project['status'] ?>
         </span>
     </div>
+    <?php if (in_array($_SESSION['user_role'], ['pm', 'client', 'super_admin'])): ?>
+    <a href="/reports/project/<?= $project['id'] ?>" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg transition-colors border border-slate-600 text-sm font-medium flex items-center gap-2">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+        View Report
+    </a>
+    <?php endif; ?>
 </div>
 
 <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-8">
@@ -74,7 +80,7 @@
                 </form>
             <?php endif; ?>
 
-            <div class="space-y-2 max-h-60 overflow-y-auto kanban-col pr-2">
+            <div class="space-y-2 max-h-60 overflow-y-auto docs-list pr-2">
                 <?php if (empty($documents)): ?>
                     <p class="text-sm text-slate-500 text-center py-2">No documents attached.</p>
                 <?php else: ?>
@@ -97,7 +103,7 @@
     // Make CSRF token available globally for JS fetches
     window.csrf_token = "<?= generate_csrf_token() ?>";
 </script>
-<script src="/assets/js/kanban.js"></script>
+<script src="/assets/js/kanban.js?v=<?= time() ?>"></script>
 
         </div>
     </main>

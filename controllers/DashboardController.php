@@ -5,6 +5,14 @@ class DashboardController {
     public function index() {
         require_login();
         $role = $_SESSION['user_role'];
+
+        // Ambil data statistik jika role adalah PM atau Super Admin
+        $stats = null;
+        if ($role === 'pm' || $role === 'super_admin') {
+            require_once __DIR__ . '/../models/ProjectModel.php';
+            $projectModel = new ProjectModel();
+            $stats = $projectModel->getDashboardStats();
+        }
         
         switch ($role) {
             case 'pm':

@@ -82,4 +82,22 @@ class ProjectModel {
         
         return $progress;
     }
+
+    public function getDashboardStats() {
+        $stats = [];
+        
+        // Total Projects
+        $stmt = $this->db->query("SELECT COUNT(*) FROM projects");
+        $stats['total_projects'] = $stmt->fetchColumn();
+        
+        // Active Tasks (status != 'done')
+        $stmt = $this->db->query("SELECT COUNT(*) FROM tasks WHERE status != 'done'");
+        $stats['active_tasks'] = $stmt->fetchColumn();
+        
+        // Upcoming Deadlines (Projects with deadline in the next 14 days)
+        $stmt = $this->db->query("SELECT COUNT(*) FROM projects WHERE deadline >= CURDATE() AND deadline <= DATE_ADD(CURDATE(), INTERVAL 14 DAY)");
+        $stats['upcoming_deadlines'] = $stmt->fetchColumn();
+        
+        return $stats;
+    }
 }

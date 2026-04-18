@@ -10,17 +10,17 @@
     <div class="glass-card rounded-xl p-6 relative overflow-hidden group">
         <div class="absolute top-0 right-0 w-32 h-32 bg-cyan-500/10 rounded-full blur-2xl -mr-10 -mt-10 transition-transform group-hover:scale-150"></div>
         <h3 class="text-slate-400 font-medium mb-1 relative z-10">Total Projects</h3>
-        <p class="text-4xl font-bold text-slate-100 relative z-10">--</p>
+        <p class="text-4xl font-bold text-slate-100 relative z-10"><?= $stats['total_projects'] ?? 0 ?></p>
     </div>
     <div class="glass-card rounded-xl p-6 relative overflow-hidden group">
         <div class="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl -mr-10 -mt-10 transition-transform group-hover:scale-150"></div>
         <h3 class="text-slate-400 font-medium mb-1 relative z-10">Active Tasks</h3>
-        <p class="text-4xl font-bold text-slate-100 relative z-10">--</p>
+        <p class="text-4xl font-bold text-slate-100 relative z-10"><?= $stats['active_tasks'] ?? 0 ?></p>
     </div>
     <div class="glass-card rounded-xl p-6 relative overflow-hidden group">
         <div class="absolute top-0 right-0 w-32 h-32 bg-purple-500/10 rounded-full blur-2xl -mr-10 -mt-10 transition-transform group-hover:scale-150"></div>
         <h3 class="text-slate-400 font-medium mb-1 relative z-10">Upcoming Deadlines</h3>
-        <p class="text-4xl font-bold text-slate-100 relative z-10">--</p>
+        <p class="text-4xl font-bold text-slate-100 relative z-10"><?= $stats['upcoming_deadlines'] ?? 0 ?></p>
     </div>
 </div>
 

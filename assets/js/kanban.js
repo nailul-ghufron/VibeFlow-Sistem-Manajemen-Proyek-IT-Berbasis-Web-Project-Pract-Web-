@@ -2,7 +2,7 @@
 
 document.addEventListener('DOMContentLoaded', () => {
     const taskCards = document.querySelectorAll('.task-card');
-    const kanbanCols = document.querySelectorAll('.kanban-col');
+    const kanbanCols = document.querySelectorAll('.kanban-col[data-status]');
 
     let draggedItem = null;
 
@@ -51,7 +51,10 @@ document.addEventListener('DOMContentLoaded', () => {
     function updateCounts() {
         kanbanCols.forEach(col => {
             const count = col.querySelectorAll('.task-card').length;
-            col.previousElementSibling.querySelector('span').textContent = count;
+            const badge = col.previousElementSibling ? col.previousElementSibling.querySelector('span') : null;
+            if (badge) {
+                badge.textContent = count;
+            }
         });
     }
 
@@ -59,8 +62,10 @@ document.addEventListener('DOMContentLoaded', () => {
         fetch('/tasks/update_status', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'X-CSRF-Token': window.csrf_token || ''
             },
+            credentials: 'same-origin',
             body: JSON.stringify({
                 task_id: taskId,
                 new_status: newStatus
