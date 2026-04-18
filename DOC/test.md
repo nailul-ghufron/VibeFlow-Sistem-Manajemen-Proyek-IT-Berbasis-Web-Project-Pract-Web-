@@ -36,11 +36,12 @@ Fokus: Interaktivitas papan tugas dan perhitungan progres.
 | ID | Kasus Uji | Langkah | Hasil yang Diharapkan | Status |
 |----|-----------|---------|-----------------------|--------|
 | TC-TASK-01 | Tambah Task (PM) | Klik "+ Add Task" di detail proyek | Task baru muncul di kolom "To Do" | [✅ ] |
+<<<<<<< HEAD
 | TC-TASK-02 | Drag & Drop (Dev) | Geser task dari "To Do" ke "In Progress" | Kartu berpindah; status di DB terupdate | [ ⏳ FIXED (Silakan re-test)] | 
 | TC-TASK-03 | Drag & Drop (Dev) | Geser task ke kolom "Done" | Kartu berpindah; progres proyek di sidebar naik | [⏳ FIXED (Silakan re-test)] |
 | TC-TASK-04 | Update Progres Otomatis | Selesaikan 1 dari 2 task (50%) | Progress bar di sidebar menunjukkan 50% | [⏳ FIXED (Silakan re-test)] |
+=======
 
----
 
 ## 4. Skenario Pengujian: Manajemen Dokumen
 Fokus: Keamanan file dan validasi upload.
@@ -59,11 +60,11 @@ Fokus: Output sistem dan pencatatan aktivitas.
 
 | ID | Kasus Uji | Langkah | Hasil yang Diharapkan | Status |
 |----|-----------|---------|-----------------------|--------|
+<<<<<<< HEAD
 | TC-REP-01 | View Report | Buka dashboard Client -> Klik link Report | Muncul halaman ringkasan proyek | [ ⏳ FIXED (Tombol View Report sudah ditambahkan di Detail Project) ] |
 | TC-REP-02 | Print Report | Klik tombol "Print / Save PDF" | Dialog print browser muncul (bersih tanpa sidebar) | [⏳ FIXED (Akan berfungsi setelah TC-REP-01 bisa diakses) ] |
 | TC-AUD-01 | Cek Activity Log | Lakukan login/update status -> Cek DB | Entry baru muncul di tabel `activity_logs` | [ ⏳ FIXED (Terkait dengan error TC-TASK-02) ] |
-
----
+=======
 
 ## 🚀 Instruksi Eksekusi Testing
 
