@@ -164,7 +164,7 @@
             </div>
             
             <p class="mt-8 text-center text-slate-500 text-sm">
-                &copy; 2024 VibeFlow. All rights reserved.
+                &copy; 2026 VibeFlow. All rights reserved.
             </p>
         </div>
     </div>
