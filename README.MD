@@ -11,7 +11,7 @@
   ╚═══╝  ╚═╝╚═════╝ ╚══════╝╚═╝     ╚══════╝ ╚═════╝  ╚══╝╚══╝
 ```
 
-**Versi:** 2.1 &nbsp;|&nbsp; **Status:** MVP — Bug Fix Release &nbsp;|&nbsp; **April 2026**
+**Versi:** 2.3 &nbsp;|&nbsp; **Status:** Feature Release &nbsp;|&nbsp; **Mei 2026**
 
 [![PHP](https://img.shields.io/badge/PHP-8.x-777BB4?style=flat&logo=php&logoColor=white)](https://php.net)
 [![MySQL](https://img.shields.io/badge/MySQL-8.0-4479A1?style=flat&logo=mysql&logoColor=white)](https://mysql.com)
@@ -55,13 +55,15 @@ Sistem ini dibangun sepenuhnya menggunakan **Vanilla PHP 8** dengan pola arsitek
 | Fitur | Deskripsi | Status |
 |-------|-----------|--------|
 | 🔐 **Autentikasi & RBAC** | Login/logout dengan Role-Based Access Control untuk 4 peran berbeda | ✅ Selesai |
-| 📁 **Manajemen Proyek** | CRUD proyek lengkap dengan deadline dan status tracking | ✅ Selesai |
-| 🗂️ **Kanban Board** | Papan tugas drag-and-drop (To Do → In Progress → Done) | ✅ Selesai |
+| 📁 **CRUD Proyek** | Buat, baca, edit, dan hapus proyek dengan pemilihan PM oleh Super Admin | ✅ Selesai |
+| 🗂️ **CRUD Tugas (Kanban)** | Papan tugas drag-and-drop + edit & hapus tugas dari modal/hover card | ✅ Selesai |
 | 📈 **Progress Otomatis** | Kalkulasi otomatis % penyelesaian berdasarkan jumlah task `done` | ✅ Selesai |
 | 📎 **Manajemen Dokumen** | Upload/download file dengan validasi MIME type & ekstensi | ✅ Selesai |
 | 📊 **Laporan Proyek** | Tampilan laporan ringkasan proyek yang dapat dicetak ke PDF | ✅ Selesai |
 | 🔒 **Audit Trail** | Pencatatan seluruh aktivitas sistem ke tabel `activity_logs` | ✅ Selesai |
+| 🎨 **Redesain UI Premium** | Halaman login & detail proyek didesain ulang dengan glassmorphism & tipografi modern | ✅ Selesai |
 | 📱 **Responsif** | UI yang menyesuaikan tampilan di berbagai perangkat | ✅ Selesai |
+| 🔗 **Open Graph Meta Tags** | Tampilan logo & deskripsi otomatis saat link dibagikan di media sosial | ✅ Selesai |
 
 ---
 
@@ -133,11 +135,12 @@ VibeFlow/
 │   │   ├── programmer.php      # Dashboard Programmer
 │   │   └── client.php          # Dashboard Klien
 │   ├── projects/
-│   │   ├── index.php           # Daftar semua proyek (card grid)
-│   │   ├── create.php          # Form pembuatan proyek baru
-│   │   └── detail.php          # Detail proyek + Kanban + Dokumen
+│   │   ├── index.php           # Daftar semua proyek (card grid) + tombol edit
+│   │   ├── create.php          # Form pembuatan proyek baru (+ pilihan PM untuk Super Admin)
+│   │   ├── edit.php            # Form edit proyek (update & konfirmasi hapus)
+│   │   └── detail.php          # Detail proyek redesign + Kanban + Dokumen
 │   ├── kanban/
-│   │   └── board.php           # Komponen Kanban Board (3 kolom)
+│   │   └── board.php           # Kanban Board: 3 kolom, edit/hapus task via modal & hover
 │   └── reports/
 │       └── project_report.php  # Laporan proyek (printable)
 │
@@ -371,7 +374,12 @@ Setiap perpindahan kartu secara otomatis:
 | GET | `/projects/create` | Form buat proyek | PM, Super Admin |
 | POST | `/projects/create` | Simpan proyek baru | PM, Super Admin |
 | GET | `/projects/detail/{id}` | Detail proyek | Semua |
+| GET | `/projects/edit/{id}` | Form edit proyek | PM (miliknya), Super Admin |
+| POST | `/projects/edit/{id}` | Simpan perubahan proyek | PM (miliknya), Super Admin |
+| GET | `/projects/delete/{id}` | Hapus proyek | PM (miliknya), Super Admin |
 | POST | `/tasks/create` | Buat task baru | PM, Super Admin |
+| POST | `/tasks/edit/{id}` | Edit task (title, priority, status, dll) | PM, Super Admin |
+| GET | `/tasks/delete/{id}` | Hapus task & recalculate progress | PM, Super Admin |
 | POST | `/tasks/update_status` | Update status Kanban (JSON) | PM, Programmer |
 | POST | `/documents/upload` | Upload file | PM, Programmer |
 | GET | `/documents/download/{id}` | Download file | Semua |
@@ -405,8 +413,9 @@ Content-Type: application/json
 |-------|:-----------:|:---------------:|:----------:|:------:|
 | Kelola Akun Pengguna | ✅ | ❌ | ❌ | ❌ |
 | Lihat Semua Proyek | ✅ | ✅ (miliknya) | ✅ (ditugaskan) | ✅ (miliknya) |
-| Buat / Edit Proyek | ✅ | ✅ | ❌ | ❌ |
-| Buat / Hapus Tugas | ✅ | ✅ | ❌ | ❌ |
+| Buat / Edit / Hapus Proyek | ✅ | ✅ (miliknya) | ❌ | ❌ |
+| Pilih Project Manager saat buat proyek | ✅ | ❌ | ❌ | ❌ |
+| Buat / Edit / Hapus Tugas | ✅ | ✅ | ❌ | ❌ |
 | Update Status Kanban | ✅ | ✅ | ✅ | ❌ |
 | Upload Dokumen | ✅ | ✅ | ✅ | ❌ |
 | Download Dokumen | ✅ | ✅ | ✅ | ✅ |
@@ -457,7 +466,7 @@ Alur Validasi Upload:
 | Elemen | Nilai |
 |--------|-------|
 | Background | `#0f172a` (Slate 900) |
-| Card | Glassmorphism (`bg-white/5 backdrop-blur-xl border border-white/10`) |
+| Card | Glassmorphism (`bg-white/5 backdrop-blur-xl border border-white/5 rounded-[2rem]`) |
 | Teks Utama | `text-slate-100` |
 | Teks Sekunder | `text-slate-400` |
 | Aksen Utama | Cyan (`#22d3ee`) |
@@ -465,6 +474,20 @@ Alur Validasi Upload:
 | Peringatan | Yellow (`#facc15`) |
 | Bahaya | Rose (`#fb7185`) |
 | Font | Inter (Google Fonts) |
+
+### Halaman yang Didesain Ulang
+
+| Halaman | Perubahan |
+|---------|----------|
+| **Login** | Layout dua kolom, branding animasi VibeFlow di kiri, Lucide Icons, glassmorphism premium |
+| **Project Detail** | Header inline dengan badge status, sidebar detail minimalis, kanban kolom terbuka (tanpa container) |
+| **Kanban Board** | Kolom tanpa border container, kartu `rounded-2xl`, priority badge outline, avatar gradient |
+
+### Open Graph Support
+
+- `og:title`, `og:description`, `og:image` → tampil saat link dibagikan di WhatsApp, Telegram, dsb.
+- `twitter:card` → pratinjau besar di Twitter/X.
+- Gambar menggunakan `/assets/VibeFlow.svg`.
 
 ### Progress Bar Color Logic
 
@@ -475,6 +498,7 @@ progress > 70%   → Hijau (Emerald)
 ```
 
 ---
+
 
 ## 🤝 Kontribusi
 
@@ -493,6 +517,37 @@ Proyek ini dikembangkan untuk keperluan akademis dan internal tim. Seluruh hak c
 ---
 
 ## 📝 Riwayat Perubahan
+
+### v2.3 — Feature Release (Mei 2026)
+
+#### ✨ Fitur Baru
+
+| Komponen | Perubahan |
+|----------|----------|
+| `views/auth/login.php` | Redesain total: layout dua kolom, branding VibeFlow di kiri, Lucide Icons, glassmorphism premium |
+| `models/ProjectModel.php` | Tambah method `updateProject()` dan `deleteProject()` untuk CRUD penuh |
+| `models/TaskModel.php` | Tambah method `updateTask()` dan `deleteTask()` untuk CRUD penuh |
+| `controllers/ProjectController.php` | Tambah action `edit`, `update`, `delete` dengan otorisasi role (PM miliknya / Super Admin) |
+| `controllers/TaskController.php` | Tambah action `edit`, `delete` + recalculate progress proyek otomatis setelah perubahan |
+| `views/projects/create.php` | Super Admin dapat memilih Project Manager & status proyek saat membuat proyek |
+| `views/projects/edit.php` | Halaman edit proyek baru dengan konfirmasi hapus berbasis JavaScript |
+| `views/projects/detail.php` | Redesain: header inline + badge status, sidebar detail minimalis dengan label all-caps |
+| `views/projects/index.php` | Tambah ikon edit pada kartu proyek untuk PM dan Super Admin |
+| `views/kanban/board.php` | Redesain papan Kanban: kolom terbuka, kartu `rounded-2xl`, tombol edit/hapus hover |
+| `views/kanban/board.php` | Modal Edit Task baru: lengkap dengan tombol "Delete Task" di sudut kiri bawah modal |
+| `views/layouts/header.php` | Tambah meta tag **Open Graph** (og:title, og:image, og:description) dan **Twitter Card** |
+
+#### 🔌 Endpoint Baru
+
+| Method | Endpoint | Aksi |
+|--------|----------|------|
+| GET | `/projects/edit/{id}` | Form edit proyek |
+| POST | `/projects/edit/{id}` | Simpan perubahan proyek |
+| GET | `/projects/delete/{id}` | Hapus proyek |
+| POST | `/tasks/edit/{id}` | Edit data task |
+| GET | `/tasks/delete/{id}` | Hapus task |
+
+---
 
 ### v2.1 — Bug Fix Release (18 April 2026)
 
@@ -526,5 +581,5 @@ Proyek ini dikembangkan untuk keperluan akademis dan internal tim. Seluruh hak c
 ---
 
 <div align="center">
-  <sub>Dibangun dengan ❤️ oleh Tim VibeFlow · April 2026</sub>
+  <sub>Dibangun dengan ❤️ oleh Tim VibeFlow · Mei 2026</sub>
 </div>
